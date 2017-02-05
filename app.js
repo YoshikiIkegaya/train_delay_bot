@@ -10,6 +10,7 @@ const CH_SECRET = 'dcee5e996362236a04d20aa74d30b4bb'; //Channel Secretを指定
 const CH_ACCESS_TOKEN = '2iRQt9GaUyC6yW4wWQfQYC6LEa7/a5KOfKKFT6KcwsPMXN+ZupmytSlyWw+tK21Pz22Bvs6skRdri4zBFTE7AUiZIo1rt1V84ncm60qEU8kQhBpCZyTBzccjpk5VLrNWOSyZ6ShlS/ALvNrFIeVBMAdB04t89/1O/w1cDnyilFU='; //Channel Access Tokenを指定
 const SIGNATURE = crypto.createHmac('sha256', CH_SECRET);
 const PORT = 3000;
+const PUSH_PATH = '/v2/bot/message/multicast'; //push用
 
 /**
  * httpリクエスト部分
@@ -48,6 +49,48 @@ const client = (replyToken, SendMessageObject) => {
         req.end();
     });
 };
+
+
+const pushClient = (userId, SendMessageObject) => {
+    let postDataStr = JSON.stringify({ to: userId, messages: SendMessageObject });
+    let options = {
+        host: HOST,
+        port: 443,
+        path: PUSH_PATH,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'X-Line-Signature': SIGNATURE,
+            'Authorization': `Bearer ${CH_ACCESS_TOKEN}`,
+            'Content-Length': Buffer.byteLength(postDataStr)
+        }
+    };
+
+    return new Promise((resolve, reject) => {
+        let req = https.request(options, (res) => {
+                    let body = '';
+                    res.setEncoding('utf8');
+                    res.on('data', (chunk) => {
+                        body += chunk;
+                    });
+                    res.on('end', () => {
+                        resolve(body);
+                    });
+        });
+
+        req.on('error', (e) => {
+            reject(e);
+        });
+        req.write(postDataStr);
+        req.end();
+    });
+};
+
+let pushSendMessageObject = [{type: 'text',text: 'こんにちは'}];
+pushClient([`U002fd686965c14a89162c66a7ec57cb9`],pushSendMessageObject)
+.then((body)=>{
+    console.log(body);
+},(e)=>{console.log(e)});
 
 http.createServer((req, res) => {
     if(req.url !== '/' || req.method !== 'POST'){
