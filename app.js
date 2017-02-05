@@ -3,19 +3,22 @@
 const http = require('http');
 const https = require('https');
 const crypto = require('crypto');
+const Twitter = require('twitter');
+const tweet = require('./tweet');
 
+const MY_USERID = 'U002fd686965c14a89162c66a7ec57cb9'; //LINEのユーザーIDを指定
 const HOST = 'api.line.me';
 const REPLY_PATH = '/v2/bot/message/reply';//リプライ用
+const PUSH_PATH = '/v2/bot/message/multicast'; //push用
 const CH_SECRET = 'dcee5e996362236a04d20aa74d30b4bb'; //Channel Secretを指定
 const CH_ACCESS_TOKEN = '2iRQt9GaUyC6yW4wWQfQYC6LEa7/a5KOfKKFT6KcwsPMXN+ZupmytSlyWw+tK21Pz22Bvs6skRdri4zBFTE7AUiZIo1rt1V84ncm60qEU8kQhBpCZyTBzccjpk5VLrNWOSyZ6ShlS/ALvNrFIeVBMAdB04t89/1O/w1cDnyilFU='; //Channel Access Tokenを指定
 const SIGNATURE = crypto.createHmac('sha256', CH_SECRET);
 const PORT = 3000;
-const PUSH_PATH = '/v2/bot/message/multicast'; //push用
 
 /**
  * httpリクエスト部分
  */
-const client = (replyToken, SendMessageObject) => {
+const replyClient = (replyToken, SendMessageObject) => {
     let postDataStr = JSON.stringify({ replyToken: replyToken, messages: SendMessageObject });
     let options = {
         host: HOST,
@@ -49,7 +52,6 @@ const client = (replyToken, SendMessageObject) => {
         req.end();
     });
 };
-
 
 const pushClient = (userId, SendMessageObject) => {
     let postDataStr = JSON.stringify({ to: userId, messages: SendMessageObject });
@@ -86,11 +88,7 @@ const pushClient = (userId, SendMessageObject) => {
     });
 };
 
-let pushSendMessageObject = [{type: 'text',text: 'こんにちは'}];
-pushClient([`U002fd686965c14a89162c66a7ec57cb9`],pushSendMessageObject)
-.then((body)=>{
-    console.log(body);
-},(e)=>{console.log(e)});
+tweet(MY_USERID, pushClient);
 
 http.createServer((req, res) => {
     if(req.url !== '/' || req.method !== 'POST'){
@@ -119,7 +117,7 @@ http.createServer((req, res) => {
                     text: WebhookEventObject.message.text
                 }];
             }
-            client(WebhookEventObject.replyToken, SendMessageObject)
+            replyClient(WebhookEventObject.replyToken, SendMessageObject)
             .then((body)=>{
                 console.log(body);
             },(e)=>{console.log(e)});

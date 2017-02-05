@@ -7,9 +7,18 @@ const tw = new Twitter({
   access_token_key: '828119541209198592-WuQREXst0wlbmMSlAitracYb6s3qqLP',
   access_token_secret: 'zDmLunxQRybg32IlnfnlaRcA7sy52wQUp5HQEET81N6ua'
 });
+const TARGET_HASHTAG = '#イェあああ'; //ハッシュタグを指定
 
-tw.stream('statuses/filter', {'track': '#botawards'}, function(stream) {
-  stream.on('data', function (data) {
-    console.log(data.text);
+let tweet = (my_user_id, pushClient) => {
+  tw.stream('statuses/filter', {'track': TARGET_HASHTAG}, (stream) => {
+    stream.on('data', (data) => {
+        let pushSendMessageObject = [{type: 'text',text: data.text}];
+          pushClient([my_user_id],pushSendMessageObject)
+          .then((body)=>{
+              console.log(`「${data.text}」をプッシュ通知成功`);
+          },(e)=>{console.log(e)});
+    });
   });
-});
+};
+
+module.exports = tweet;
