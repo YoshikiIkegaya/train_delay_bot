@@ -2,10 +2,10 @@
 
 const Twitter = require('twitter');
 const tw = new Twitter({
-  consumer_key: '0NCjCikIfY3sUT0mVcZcJm6qT',
-  consumer_secret: 'MxTX112TuPJXZafvdQ2Gt0Yx7el4eEym3NScIrgJuvqgzMPW5w',
-  access_token_key: '828119541209198592-WuQREXst0wlbmMSlAitracYb6s3qqLP',
-  access_token_secret: 'zDmLunxQRybg32IlnfnlaRcA7sy52wQUp5HQEET81N6ua'
+  consumer_key: process.env.CONSUMER_KEY,
+  consumer_secret: process.env.CONSUMER_SECRET,
+  access_token_key: process.env.ACCESS_TOKEN_KEY,
+  access_token_secret: process.env.ACCESS_TOKEN_SECRET
 });
 const TARGET_HASHTAG = '#イェあああ'; //ハッシュタグを指定
 
