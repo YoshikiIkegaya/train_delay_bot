@@ -92,7 +92,7 @@ console.log(line);
 //     });
 // };
 
-tweet(MY_USERID, line.pushClient);
+// tweet(MY_USERID, line.pushClient);
 
 http.createServer((req, res) => {
     if(req.url !== '/' || req.method !== 'POST'){
