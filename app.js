@@ -15,6 +15,7 @@ const CH_SECRET = process.env.CH_SECRET; //Channel Secretを指定
 const CH_ACCESS_TOKEN = process.env.CH_ACCESS_TOKEN; //Channel Access Tokenを指定
 const SIGNATURE = crypto.createHmac('sha256', CH_SECRET);
 const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST;
 
 console.log(line);
 
@@ -35,7 +36,7 @@ console.log(line);
 //             'Content-Length': Buffer.byteLength(postDataStr)
 //         }
 //     };
-//
+// 
 //     return new Promise((resolve, reject) => {
 //         let req = https.request(options, (res) => {
 //                     let body = '';
@@ -47,7 +48,7 @@ console.log(line);
 //                         resolve(body);
 //                     });
 //         });
-//
+// 
 //         req.on('error', (e) => {
 //             reject(e);
 //         });
@@ -55,7 +56,7 @@ console.log(line);
 //         req.end();
 //     });
 // };
-
+// 
 // const pushClient = (userId, SendMessageObject) => {
 //     let postDataStr = JSON.stringify({ to: userId, messages: SendMessageObject });
 //     let options = {
@@ -70,7 +71,7 @@ console.log(line);
 //             'Content-Length': Buffer.byteLength(postDataStr)
 //         }
 //     };
-//
+// 
 //     return new Promise((resolve, reject) => {
 //         let req = https.request(options, (res) => {
 //                     let body = '';
@@ -82,7 +83,7 @@ console.log(line);
 //                         resolve(body);
 //                     });
 //         });
-//
+// 
 //         req.on('error', (e) => {
 //             reject(e);
 //         });
@@ -91,7 +92,7 @@ console.log(line);
 //     });
 // };
 
-tweet(MY_USERID, line.pushClient);
+// tweet(MY_USERID, line.pushClient);
 
 http.createServer((req, res) => {
     if(req.url !== '/' || req.method !== 'POST'){
